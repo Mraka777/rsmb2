@@ -1,0 +1,19 @@
+#h-nav .navbar-brand {
+ padding-top:5px;
+}
+
+#nav2 .navbar-brand {
+ color:#FFF;
+}
+
+.navbar-vr-divider
+{
+ border-right:1px solid #333;
+ box-shadow: 2px 0px 2px #333;
+}
+
+.nav > li > a
+{
+ padding-right:10px;
+ font-weight:bold;
+}

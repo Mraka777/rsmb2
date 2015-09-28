@@ -1,0 +1,126 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+ background: url('./_img/body-bg.png') repeat
+}
+
+.theme-showcase > .content-header
+{
+  height:70px;
+}
+
+.theme-showcase > .content-header > .social > .panel
+{
+  height:60px;
+}
+
+.theme-showcase > .content-header > .social > .panel > .panel-body
+{
+  height:100%;
+  padding-left:5px;
+  padding-right:5px;
+}
+.theme-showcase > .content-header > .social > .panel > .panel-body > img
+{
+  width:32px;
+}
+
+.theme-showcase > .content-header > .bn > img
+{
+  width:468px;
+  height:60px;
+}
+
+.content-main > .main-lcol > .panel > .panel-heading
+{
+  height:50px;
+  background-color:#101010;
+  color:WHITE;
+  font-size:16px;
+  padding-top:13px;
+}
+
+.rsm-table-row-naming
+{
+	background-color:#FCFCFC;
+	font-weight:bold;
+}
+
+th
+{
+	text-align:center;
+	font-weight:bold;
+}
+
+.content-main .panel .table
+{
+	font-size:12px;
+}
+
+table
+{
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
+
+div.panel-body table
+{
+	margin:0px;
+}
+
+table.table-training sup
+{
+	color:#909090;
+}
+
+table.table-training td
+{
+	text-align:center;	
+}
+
+table.table-academy td
+{
+	text-align:center;	
+}
+
+select.form-control
+{
+	padding:0px;
+	height:100%;
+}
+div.help-on-page
+{
+	float:right;
+	margin-top:-6px;
+}
+
+div.main-col div.panel-body .panel-heading
+{
+	font-weight:bold;
+	text-align:center;
+}
+
+.flag
+{
+	margin-top:-3px;
+}
+
+div.content-panel .panel-heading h1
+{
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+	font-size: 1.2em;
+	text-transform: uppercase;
+	font-weight: bold;
+	
+}
+
+body { overflow-y: scroll; }
+body.modal-open { overflow-y: scroll; }
+.modal { overflow: auto; }
