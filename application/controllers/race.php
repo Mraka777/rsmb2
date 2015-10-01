@@ -246,7 +246,7 @@ class Race extends RSM_Controller {
 		
 		if ( $this->ion_auth->logged_in() ) 
 		{
-		
+		//comment 01.10.2015
 		$this->data['race_info']=$this->Race_model->get_race_info($race_id);
 		//print_r($this->data['race_info']);
 		$this->data['race_sportsman_list']=$this->Race_model->get_race_sportsman_list($race_id);
