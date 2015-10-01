@@ -1,4 +1,5 @@
 <?php include $rsm['th_path']."/_common/general-header.php";?>
+<!-- Changed Race Tactics -->
 					<!-- Content -->
 					<div class="panel panel-default content-panel">
 						<!-- Default panel contents -->
