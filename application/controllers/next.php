@@ -183,7 +183,7 @@ class Next extends RSM_Controller {
 		//echo($next_day);
 		
 		$check_season_end = $next_day % 35;
-		$check_league_end = $next_day % 22;
+		$check_league_end = $next_day % 22; // расчет плей-офф после 22 дня
 
 		//print("LE=".$check_league_end."<br>");
 		if ($check_league_end==1) {

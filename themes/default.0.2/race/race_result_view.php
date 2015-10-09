@@ -76,13 +76,14 @@
 											<tbody>
 												<?php
 												//Example: Teams for 1 column
-												for($i=1;$i<9;$i++) : ?>
+												//print_r($top8_team_pts);
+												for($i=0;$i<8;$i++) { ?>
 												<tr>
-													<td style="font-weight:bold;"><?php echo $i;?></td>
-													<td><img src="/images/flag/icons-flag-ru.png"> <a href="">Test Team 1000</a></td>
-													<td>162</td>
+													<td style="font-weight:bold;"><?php echo ($i+1);?></td>
+													<td><img src="/images/flag/<?php echo $top8_team_pts[$i]['logo'];?>"> <a href="/en/team/view/<?php echo $top8_team_pts[$i]['team_id'];?>"><?php echo $top8_team_pts[$i]['team_name'];?></a></td>
+													<td><?php echo $top8_team_pts[$i]['race_points'];?></td>
 												</tr>
-												<?php endfor;?>
+												<?php } ?>
 											</tbody>
 										</table>
 									</div><!-- /panel -->
@@ -104,13 +105,13 @@
 											<tbody>
 												<?php
 												//Example: Teams for 2 column
-												for($i=9;$i<17;$i++) : ?>
+												for($i=0;$i<8;$i++) { ?>
 												<tr>
-													<td style="font-weight:bold;"><?php echo $i;?></td>
-													<td><img src="/images/flag/icons-flag-ru.png"> <a href="">Test Team 1000</a></td>
-													<td>162</td>
+													<td style="font-weight:bold;"><?php echo ($i+9);?></td>
+													<td><img src="/images/flag/<?php echo $next8_team_pts[$i]['logo'];?>"> <a href="/en/team/view/<?php echo $next8_team_pts[$i]['team_id'];?>"><?php echo $next8_team_pts[$i]['team_name'];?></a></td>
+													<td><?php echo $next8_team_pts[$i]['race_points'];?></td>
 												</tr>
-												<?php endfor;?>
+												<?php } ?>
 											</tbody>
 										</table>
 									</div><!-- /panel -->
@@ -121,7 +122,7 @@
 								<div class="col-md-4 column">
 									<!-- Hero -->
 									<div class="panel panel-default">
-										<div class="panel-heading" style="padding:5px 10px 5px 10px;">Hero</div>
+										<div class="panel-heading" style="padding:5px 10px 5px 10px;">Hero*</div>
 										<table class="table-striped table-bordered table-condensed" style="width:100%;">
 											<tbody>
 												<tr></tr>
@@ -153,12 +154,12 @@
 														<span class="glyphicon glyphicon-user" style="font-size:3em;float:left;"></span>
 													</td>
 														<td>
-														<a href="" title="Russia"><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="/en/player/view/12" title="Yaroslav Lebedev">Lebedev, Yaroslav</a>
+														<a href="" title="Russia"><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="<?php print($race_sniper['nameb_en']); ?>"></a>
+														<a href="/en/player/view/<?php print($race_sniper['sportsman_id']); ?>" title="<?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?>"><?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?></a>
 													</td>
 												</tr>
 												<tr>
-													<td>Hit 19 from 20 targets!</td>
+													<td>Missed <?php print($race_sniper['race_shots_missed']); ?> from 20 targets!</td>
 												</tr>
 											</tbody>
 										</table>
@@ -167,7 +168,7 @@
 									
 									<!-- Best Ski -->
 									<div class="panel panel-default">
-										<div class="panel-heading" style="padding:5px 10px 5px 10px;">Best Ski</div>
+										<div class="panel-heading" style="padding:5px 10px 5px 10px;">Best Ski*</div>
 										<table class="table-striped table-bordered table-condensed" style="width:100%;">
 											<tbody>
 												<tr></tr>
@@ -219,19 +220,22 @@
 											</tr>
 										</thead>
 										<tbody>
+											<?php
+											$i=0;
+											foreach($race_sportsman_list as $sportsman){ ?>
 											<tr>
-												<td><strong>1</strong></td>
+												<td><strong><?php echo($i+1);?></strong></td>
 												<td style="white-space: nowrap;">
 													<img src="/images/flag/icons-flag-ru.png">
-													<a href="">Blinov, A.</a>
+													<a href=""><?php echo $sportsman['name2']; ?></a>
 												</td>
 												<td style="white-space: nowrap;">
 													<img src="/images/flag/icons-flag-ru.png">
-													<a href="">Test Team 1000</a>
+													<a href=""><?php echo $sportsman['team_name']; ?></a>
 												</td>
 												<td>1:14:11.15</td>
 												<td>+1:11.10</td>
-												<td><strong>60</strong></td>
+												<td><strong><?php echo $sportsman['race_points']; ?></strong></td>
 												<th></th>
 												<td>1:10:10.15</td>
 												<td>1+0+1+0</td>
@@ -243,29 +247,9 @@
 												<td>+1</td>
 												<td>9</td>
 											</tr>
-												<td><strong>2</strong></td>
-												<td>
-													<img src="/images/flag/icons-flag-ru.png">
-													<a href="">Blinov, A.</a>
-												</td>
-												<td>
-													<img src="/images/flag/icons-flag-ru.png">
-													<a href="">Test Team 1000</a>
-												</td>
-												<td>1:14:11.15</td>
-												<td>+1:11.10</td>
-												<td><strong>57</strong></td>
-												<th></th>
-												<td>1:10:10.15</td>
-												<td>1+0+1+0</td>
-												<td>2</td>
-												<th></th>
-												<td>+2</td>
-												<td>+2</td>
-												<td>+0</td>
-												<td>+1</td>
-												<td>8</td>
-											</tr>
+										<?php
+										$i++;
+										} ?>
 										</tbody>
 									</table>
 								</div>

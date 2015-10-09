@@ -87,6 +87,18 @@ class Race extends RSM_Controller {
 		}
 	}
 	
+	public function report($race_id) {
+		if ( $this->ion_auth->logged_in() ) 
+		{
+			$this->data['top8_team_pts']=$this->Race_model->get_top8_team_pts($race_id);
+			$this->data['next8_team_pts']=$this->Race_model->get_next8_team_pts($race_id);
+			$this->data['race_sniper']=$this->Race_model->get_race_sniper($race_id);
+			$this->data['race_sportsman_list']=$this->Race_model->get_race_sportsman_result_list($race_id);
+			
+			$this->load->view($this->data['current_theme'].'/race/race_result_view.php', $this->data);
+		}
+	}
+	
 	public function calendar() {
 		if ( $this->ion_auth->logged_in() ) 
 		{

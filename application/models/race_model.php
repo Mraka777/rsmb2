@@ -60,6 +60,17 @@ WHERE race_id='.$race_id.' ORDER BY rsm_race_sportsman_list.team_id';
 			//print($query);
 			return $query;
 		}
+		
+		function get_race_sportsman_result_list ($race_id) {
+		$sql = 'SELECT * FROM `rsm_race_sportsman_list` 
+LEFT OUTER JOIN rsm_sportsman ON rsm_race_sportsman_list.sportsman_id = rsm_sportsman.sportsman_id 
+LEFT OUTER JOIN rsm_team ON rsm_sportsman.team_id = rsm_team.team_id
+LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
+WHERE race_id='.$race_id.' ORDER BY rsm_race_sportsman_list.race_place ASC';
+    $query = $this->db->query($sql);
+    return $query->result_array();
+		}
+		
 
 		function get_last_race_id ($day_id, $user_id) {
 			
@@ -451,6 +462,44 @@ WHERE rsm_race_sportsman_list.team_id = ".$team_id." AND race_id = ".$race_id." 
 		$query = $query->result_array();
 		return $query;
 		}
+		
+		function get_top8_team_pts($race_id) {
+			$sql = "SELECT rsm_race_team_list.team_id, rsm_race_team_list.race_points, rsm_team.team_name, rsm_country.logo FROM rsm_race_team_list 
+LEFT OUTER JOIN rsm_team ON rsm_race_team_list.team_id = rsm_team.team_id
+LEFT OUTER JOIN rsm_country ON rsm_team.country_id = rsm_country.country_id
+WHERE race_id =  ".$race_id." ORDER BY  `rsm_race_team_list`.`race_points` DESC  LIMIT 0,8";
+    $query = $this->db->query($sql);
+		$query = $query->result_array();
+		//print_r($query);
+		return ($query);
+		}
+		
+		function get_next8_team_pts($race_id) {
+			$sql = "SELECT rsm_race_team_list.team_id, rsm_race_team_list.race_points, rsm_team.team_name, rsm_country.logo FROM rsm_race_team_list 
+LEFT OUTER JOIN rsm_team ON rsm_race_team_list.team_id = rsm_team.team_id
+LEFT OUTER JOIN rsm_country ON rsm_team.country_id = rsm_country.country_id
+WHERE race_id =  ".$race_id." ORDER BY  `rsm_race_team_list`.`race_points` DESC  LIMIT 8,8";
+    $query = $this->db->query($sql);
+		$query = $query->result_array();
+		//print_r($query);
+		return ($query);
+		}
+		
+		function get_race_sniper($race_id) {
+			$sql = "SELECT rsm_race_sportsman_list.sportsman_id, rsm_race_sportsman_list.race_shots_missed, rsm_sportsman.name1, rsm_sportsman.name2, rsm_country.logo, rsm_country.nameb_en
+							FROM  `rsm_race_sportsman_list`
+							LEFT OUTER JOIN rsm_sportsman ON rsm_race_sportsman_list.sportsman_id = rsm_sportsman.sportsman_id
+							LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
+							WHERE  `race_id` = ".$race_id."
+							ORDER BY  `rsm_race_sportsman_list`.`race_shots_missed` ASC 
+							LIMIT 0 , 1";
+    $query = $this->db->query($sql);
+		$query = $query->result_array();
+		$query=$query[0];
+		//print_r($query);
+		return ($query);
+		}		
+		
 }
 
 
