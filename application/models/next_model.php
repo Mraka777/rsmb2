@@ -1561,7 +1561,7 @@ WHERE team_id = ".$team_id." ";
    }
 
 
-  function change_season_teams() {
+  function change_season_teams() { // ф-ия меняет лиги у команд, которые вышли в лигу выше или вылетели в лигу ниже
     $sql = "SELECT max(country_id), max(league_lvl) FROM `rsm_league`";
     $query = $this->db->query($sql);
     $query = $query->result_array();
