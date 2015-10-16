@@ -35,11 +35,11 @@
 												</tr>
 												<tr>
 													<td><Strong>Real Time</Strong></td>
-													<td>?????</td>
+													<td>-</td>
 												</tr>
 												<tr>
 													<td><strong>Type</strong></td>
-													<td>League / PO / Cup / ???</td>
+													<td>-</td>
 												</tr>
 												<tr>
 													<td><Strong>Competition</Strong></td>
@@ -49,7 +49,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td colspan="2" style="height:100%;"><strong>Скауты:</strong> рекомендуем использовать сильнейших скоростных спортсменов.
+													<td colspan="2" style="height:100%;"><strong>Scout:</strong> Some test advice.
 													<!-- Решающее значение будут иметь сила, выносливость и скорость стрельбы -->
 													<!-- ??? -->
 												</tr>
@@ -193,7 +193,7 @@
 													<td><?php echo rate_stars($rsm['th_url'],$sman['phys_energy'],10);?></td>
 													<td><?php echo rate_stars($rsm['th_url'],50,10);?></td>
 													<td><?php echo rate_stars($rsm['th_url'],$sman['popularity'],10);?></td>
-													<td><a title="Info about tactic" href="<?php echo $rsm['base_url'];?>/race/tactics">Preset One</a></td>
+													<td><a title="Info about tactic" href="<?php echo $rsm['base_url'];?>/race/tactics">-</a></td>
 													<td>
 														<img title="Not Listed" src="/assets/images/clipart/transfer-icon-off.png" style="height:16px;"/>
 														<img title="Healthy" src="/assets/images/clipart/trauma-icon-off.png" style="height:16px;"/>
