@@ -93,7 +93,12 @@ class Race extends RSM_Controller {
 			$this->data['top8_team_pts']=$this->Race_model->get_top8_team_pts($race_id);
 			$this->data['next8_team_pts']=$this->Race_model->get_next8_team_pts($race_id);
 			$this->data['race_sniper']=$this->Race_model->get_race_sniper($race_id);
+			$this->data['race_best_ski']=$this->Race_model->get_race_best_ski($race_id);
 			$this->data['race_sportsman_list']=$this->Race_model->get_race_sportsman_result_list($race_id);
+			$this->data['track_data']=$this->Race_model->get_race_data($race_id);
+			$this->data['race_weather']=$this->Race_model->get_race_weather_extended($race_id);
+			
+			//$this->data['race_result'] = $this->Race_model->get_race_result($race_id);
 			
 			$this->load->view($this->data['current_theme'].'/race/race_result_view.php', $this->data);
 		}
@@ -230,6 +235,7 @@ class Race extends RSM_Controller {
 			
 			
 			if ($this->data['race_info'][0]['race_status'] == '0') {
+				//показываем окно выбора тактики
 				$this->data['race_team_sportsman_list']=$this->Race_model->get_team_race_sportsman_list($this->data['race_info'][0]['race_id'], $this->user_bm_id);
 				//get full team list for choice
 				$this->data['race_tactics_types']=$this->Race_model->get_race_tactics_types();
