@@ -132,29 +132,48 @@ WHERE rsm_league.league_id = ".$league." AND rsm_sportsman_training_log.day_id =
     }
     
     function get_top_playoff($league_id) {
-      $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
+      $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_id, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
       LEFT OUTER JOIN rsm_team ON rsm_league_playoff.team_id = rsm_team.team_id
       LEFT OUTER JOIN rsm_league ON rsm_team.league_id = rsm_league.league_id
       WHERE `rsm_playoff_league_id` = ".$league_id." AND `playoff_type` = 1 ORDER BY `rsm_league_playoff`.`team_points` DESC";
       //сделать if points = 0 sort by team_id
       $query = $this->db->query($sql);
       $query = $query->result_array();
-      {
-        //print_r($query);
+      if (isset($query[0]['team_points'])) {
+        if ($query[0]['team_points'] == '0' AND $query[1]['team_points'] == '0' AND $query[2]['team_points'] == '0' AND $query[3]['team_points'] == '0')
+        {
+          $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_id, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
+          LEFT OUTER JOIN rsm_team ON rsm_league_playoff.team_id = rsm_team.team_id
+          LEFT OUTER JOIN rsm_league ON rsm_team.league_id = rsm_league.league_id
+          WHERE `rsm_playoff_league_id` = ".$league_id." AND `playoff_type` = 1 ORDER BY team_id ASC";
+          $query = $this->db->query($sql);
+          $query = $query->result_array();
+        }
       }
+        
+      //print_r($query);
+      
+      
       return $query;
     }
     
     function get_jump_playoff($league_id) {
-      $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
+      $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_id, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
       LEFT OUTER JOIN rsm_team ON rsm_league_playoff.team_id = rsm_team.team_id
       LEFT OUTER JOIN rsm_league ON rsm_team.league_id = rsm_league.league_id
       WHERE `rsm_playoff_league_id` = ".$league_id." AND `playoff_type` = 2 ORDER BY `rsm_league_playoff`.`team_points` DESC";
       //сделать if points = 0 sort by team_id
       $query = $this->db->query($sql);
       $query = $query->result_array();
-      {
-        //print_r($query);
+      if (isset($query[0]['team_points'])) {
+        if ($query[0]['team_points'] == '0' AND $query[1]['team_points'] == '0' AND $query[2]['team_points'] == '0' AND $query[3]['team_points'] == '0') {
+          $sql = "SELECT rsm_league_playoff.*, rsm_team.team_name, rsm_league.league_id, rsm_league.league_lvl, rsm_league.league_num  FROM `rsm_league_playoff`
+          LEFT OUTER JOIN rsm_team ON rsm_league_playoff.team_id = rsm_team.team_id
+          LEFT OUTER JOIN rsm_league ON rsm_team.league_id = rsm_league.league_id
+          WHERE `rsm_playoff_league_id` = ".$league_id." AND `playoff_type` = 2 ORDER BY `rsm_league`.`league_id` ASC";
+          $query = $this->db->query($sql);
+          $query = $query->result_array();
+        }
       }
       return $query;
     }
