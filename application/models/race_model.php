@@ -14,22 +14,7 @@ class Race_model extends CI_Model {
 		
 		}
 		
-		function get_race_result ($race_id) {
-			$sql='SELECT DISTINCT mark FROM rsm_logr WHERE race_id = '.$race_id.' ORDER BY logr_id';
-			//echo($sql);
-			$query = $this->db->query($sql);
-			$last_mark_row = $query->last_row('array'); //get last row -> last mark
-			//echo $last_mark_row['mark'];
-			$sql = 'SELECT * FROM `rsm_logr`
-			LEFT OUTER JOIN rsm_sportsman ON rsm_logr.sportsman_id = rsm_sportsman.sportsman_id
-			LEFT OUTER JOIN rsm_team ON rsm_sportsman.team_id = rsm_team.team_id
-			LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
-			WHERE `race_id` = '.$race_id.' AND `mark` = '.$last_mark_row['mark'].' ORDER BY `time` ASC'; //first logr_id -> first place
-			//echo($sql);
-			$query = $this->db->query($sql);
-			//print_r($query->result_array());
-			return $query->result_array();
-		}
+
 		
 		function get_race_result_shooting ($race_id) {
 			//echo $last_mark_row['mark'];
@@ -68,8 +53,43 @@ LEFT OUTER JOIN rsm_team ON rsm_sportsman.team_id = rsm_team.team_id
 LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
 WHERE race_id='.$race_id.' ORDER BY rsm_race_sportsman_list.race_place ASC';
     $query = $this->db->query($sql);
-    return $query->result_array();
+		$query=$query->result_array();
+		
+		$count = count($query);
+		//print($count);
+		for ($i = 0; $i < $count; $i++) {
+			//print($query[$i]['overall_time']."<br>");
+			if ($i>0) {
+				//$query[$i]['behind'] = "+ ";
+				$query[$i]['behind'] = $query[$i]['overall_time']-$query[0]['overall_time'];
+			}
+			else {
+				$query[$i]['behind'] = '0';
+			}
 		}
+		
+		
+    return $query;
+		}
+
+		function get_race_result ($race_id) {
+			$sql='SELECT DISTINCT mark FROM rsm_logr WHERE race_id = '.$race_id.' ORDER BY logr_id';
+			//echo($sql);
+			$query = $this->db->query($sql);
+			$last_mark_row = $query->last_row('array'); //get last row -> last mark
+			//echo $last_mark_row['mark'];
+			$sql = 'SELECT * FROM `rsm_logr`
+			LEFT OUTER JOIN rsm_sportsman ON rsm_logr.sportsman_id = rsm_sportsman.sportsman_id
+			LEFT OUTER JOIN rsm_team ON rsm_sportsman.team_id = rsm_team.team_id
+			LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
+			WHERE `race_id` = '.$race_id.' AND `mark` = '.$last_mark_row['mark'].' ORDER BY `time` ASC'; //first logr_id -> first place
+			//echo($sql);
+			$query = $this->db->query($sql);
+			//print("<pre>");
+			//print_r($query->result_array());
+			//print("</pre>");
+			return $query->result_array();
+		}		
 		
 
 		function get_last_race_id ($day_id, $user_id) {
@@ -87,6 +107,58 @@ WHERE race_id='.$race_id.' ORDER BY rsm_race_sportsman_list.race_place ASC';
 			return $query;
 		}
 		
+		function get_race_data ($race_id){
+			$sql = "SELECT rsm_race.track_id, rsm_race.race_attendance, rsm_season.real_date, rsm_season.day_num FROM `rsm_race`
+			LEFT OUTER JOIN rsm_season ON rsm_race.day_id = rsm_season.day_id
+			WHERE `race_id` = ".$race_id." ";
+			$query = $this->db->query($sql);
+			$query = $query->result_array();
+			$track_id = $query[0]['track_id'];
+			$data['race_attendance'] = $query[0]['race_attendance'];
+			$data['race_real_date'] = $query[0]['real_date'];
+			$data['race_num_day'] = $query[0]['day_num'];
+			
+			$sql = "SELECT rsm_track.track_capacity, rsm_track.name_en, rsm_track.track_type, rsm_team.team_name, rsm_team.team_id, rsm_country.logo, rsm_country.nameb_en, rsm_league.league_lvl, rsm_league.league_num FROM `rsm_track`
+			LEFT OUTER JOIN rsm_team ON rsm_track.user_id = rsm_team.team_id
+			LEFT OUTER JOIN rsm_country ON rsm_team.country_id = rsm_country.country_id
+			LEFT OUTER JOIN rsm_league ON rsm_team.league_id = rsm_league.league_id
+			WHERE `track_id` =  ".$track_id." ";
+			$query = $this->db->query($sql);
+			$query = $query->result_array();
+			//print_r($query);
+			$track_capacity = $query[0]['track_capacity'];
+			
+			$data['track_capacity'] = $track_capacity;
+			$data['track_name'] = $query[0]['name_en'];
+			$track_type = $query[0]['track_type'];
+			
+			switch ($track_type) {
+					case 1:
+							$data['track_type'] = 'Plain';
+							$data['track_plain']=60;
+							$data['track_rise']=20;
+							$data['track_descent']=20;
+							break;
+
+					default:
+							$data['track_type'] = 'Unknown';
+							$data['track_plain']=0;
+							$data['track_rise']=0;
+							$data['track_descent']=0;
+							break;
+			}
+			
+			$data['track_team_name'] = $query[0]['team_name'];
+			$data['track_team_id'] = $query[0]['team_id'];
+			$data['logo'] = $query[0]['logo'];
+			$data['nameb_en'] = $query[0]['nameb_en'];
+			
+			$data['league_lvl'] = $query[0]['league_lvl'];
+			$data['league_num'] = $query[0]['league_num'];
+			//print_r($data);
+			return $data;
+		}
+		
 		function get_next_race_info ($day_id, $user_id) { //получение следующей гонки по текущему дню недели //можно переделать в цикл
 
 		$sql = "SELECT rsm_race.race_id, rsm_race.race_status, rsm_track.track_id, rsm_track.user_id, rsm_track.name_en, rsm_track.track_logo, rsm_track.track_type, rsm_track.track_tech, rsm_track_type.*, rsm_race_weather_forecast.*, rsm_season.season_id, rsm_season.day_num, rsm_season.real_date, rsm_league.league_lvl, rsm_league.league_num, rsm_league.country_id FROM rsm_race 
@@ -97,6 +169,8 @@ LEFT OUTER JOIN rsm_race_weather_forecast ON rsm_race.race_id = rsm_race_weather
 LEFT OUTER JOIN rsm_season ON rsm_race.day_id = rsm_season.day_id
 LEFT OUTER JOIN rsm_league ON rsm_race.league_id = rsm_league.league_id
 WHERE rsm_race.day_id=".$day_id." AND rsm_team.user_id = ".$user_id." AND rsm_race.race_status = 0 LIMIT 0,1";
+
+
     //print($sql."<br>");
 		$query = $this->db->query($sql);
 		//echo $query->num_rows();
@@ -349,9 +423,78 @@ WHERE rsm_race.day_id=".$day_id." AND rsm_team.user_id = ".$user_id." AND rsm_ra
     $query = $this->db->query($sql);
 		return $query->result_array();
 		}
+		
+		function get_race_weather_extended ($race_id) { //получение информации о погоде
+		$sql = "SELECT * FROM rsm_race_weather WHERE rsm_race_id=".$race_id." ";
+    $query = $this->db->query($sql);
+		$query = $query->result_array();
+		$data = $query[0];
+		//print_r($data);
+			$sql = "SELECT img, descr FROM `rsm_race_weather_phenomena` WHERE `rsm_race_weather_phenomena_type` = 1 AND `rsm_race_weather_phenomena_subtype` = ".$data['wind_type']." ";
+			//print($sql);
+			$q2 = $this->db->query($sql);
+			$q2 = $q2->result_array();
+			$q2 = $q2[0];
+			$data['wind_type_descr']=$q2['descr'];
+			$data['wind_type_img']=$q2['img'];
+			
+			if ($data['fog_type'] > 0) {
+				$sql = "SELECT img, descr FROM `rsm_race_weather_phenomena`  WHERE `rsm_race_weather_phenomena_type` = 2 AND `rsm_race_weather_phenomena_subtype` = ".$data['fog_type']." ";
+				$q2 = $this->db->query($sql);
+				$q2 = $q2->result_array();
+				$q2 = $q2[0];
+				$data['fog_type_descr']=$q2['descr'];
+				$data['fog_type_img']=$q2['img'];
+				$data['phenomena_descr']=$q2['descr'];
+				$data['phenomena_img']=$q2['img'];
+				$data['sun_type_descr']='Clouds';
+				//$data['sun_type_img']=$q2['img'];
+			}
+			
+			if ($data['sun_type'] > 0) {
+				$sql = "SELECT img, descr FROM `rsm_race_weather_phenomena`  WHERE `rsm_race_weather_phenomena_type` = 3 AND `rsm_race_weather_phenomena_subtype` = ".$data['sun_type']." ";
+				$q2 = $this->db->query($sql);
+				$q2 = $q2->result_array();
+				$q2 = $q2[0];
+				$data['sun_type_descr']=$q2['descr'];
+				$data['sun_type_img']=$q2['img'];
+				$data['phenomena_descr']=$q2['descr'];
+				$data['phenomena_img']=$q2['img'];
+				
+			}
+
+			if ($data['rain_type'] > 0) {
+				$sql = "SELECT img, descr FROM `rsm_race_weather_phenomena`  WHERE `rsm_race_weather_phenomena_type` = 4 AND `rsm_race_weather_phenomena_subtype` = ".$data['rain_type']." ";
+				$q2 = $this->db->query($sql);
+				$q2 = $q2->result_array();
+				$q2 = $q2[0];
+				$data['rain_type_descr']=$q2['descr'];
+				$data['rain_type_img']=$q2['img'];
+				$data['phenomena_descr']=$q2['descr'];
+				$data['phenomena_img']=$q2['img'];
+				$data['sun_type_descr']='Clouds';
+			}
+			if ($data['snow_type'] > 0) {
+				$sql = "SELECT img, descr FROM `rsm_race_weather_phenomena`  WHERE `rsm_race_weather_phenomena_type` = 5 AND `rsm_race_weather_phenomena_subtype` = ".$data['snow_type']." ";
+				$q2 = $this->db->query($sql);
+				$q2 = $q2->result_array();
+				$q2 = $q2[0];
+				$data['snow_type_descr']=$q2['descr'];
+				$data['snow_type_img']=$q2['img'];
+				$data['phenomena_descr']=$q2['descr'];
+				$data['phenomena_img']=$q2['img'];
+				$data['sun_type_descr']='Clouds';
+			}
+		//print("<pre>");
+		//print_r($data);
+		//print("</pre>");
+		return $data;
+		
+		}		
+		
     
 		function get_team_race_sportsman_list ($race_id, $team_id) {
-			$sql = "SELECT rsm_sportsman.sportsman_id, rsm_sportsman.name1, rsm_sportsman.name2, rsm_sportsman.age, rsm_sportsman.phys_energy, rsm_sportsman.popularity, rsm_sportsman.overall_rating FROM `rsm_race_sportsman_list` 
+			$sql = "SELECT rsm_sportsman.sportsman_id, rsm_sportsman.name1, rsm_sportsman.name2, rsm_sportsman.age, rsm_sportsman.phys_energy, rsm_sportsman.popularity, rsm_sportsman.overall_rating, rsm_race_sportsman_list.ski_time FROM `rsm_race_sportsman_list` 
 LEFT OUTER JOIN rsm_sportsman ON rsm_race_sportsman_list.sportsman_id  = rsm_sportsman.sportsman_id
 WHERE rsm_race_sportsman_list.team_id = ".$team_id." AND race_id = ".$race_id." ";
 			$query = $this->db->query($sql);
@@ -498,7 +641,18 @@ WHERE race_id =  ".$race_id." ORDER BY  `rsm_race_team_list`.`race_points` DESC 
 		$query=$query[0];
 		//print_r($query);
 		return ($query);
-		}		
+		}
+		
+		function get_race_best_ski($race_id) {
+		$sql = "SELECT rsm_race_sportsman_list.sportsman_id, rsm_race_sportsman_list.ski_time, rsm_sportsman.*, rsm_country.logo, rsm_country.nameb_en FROM `rsm_race_sportsman_list`
+		LEFT OUTER JOIN rsm_sportsman ON rsm_race_sportsman_list.sportsman_id = rsm_sportsman.sportsman_id
+		LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
+		WHERE  `race_id` = ".$race_id." ORDER BY  `rsm_race_sportsman_list`.`ski_time` ASC LIMIT 0 , 1";
+    $query = $this->db->query($sql);
+		$query = $query->result_array();
+		$query=$query[0];
+		return ($query);
+		}
 		
 }
 
