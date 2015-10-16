@@ -466,14 +466,6 @@ WHERE team_id = ".$team_id." ";
           if($row['days_next']>0) { //if construction is in progress -> select previous level
           
             $building_level = $row['building_level']-1;
-            //$old_level=$row['building_level']-1;
-              //$sql = "SELECT training_up FROM `rsm_infrastructure_building_level` WHERE `building_id` = ".$row['building_id']." AND `building_level` = ".$old_level.";";
-              //$query2 = $this->db->query($sql);
-              //if ($query2->num_rows() > 0)
-              //{
-              //   $row2 = $query2->row();
-              //   $row['training_up']=$row2->training_up;
-              //}
             }
           
           else $building_level = $row['building_level'];
@@ -514,8 +506,8 @@ WHERE team_id = ".$team_id." ";
           //print($age."<br>");
           
           $current_player = array("day"=>$age, "talant"=>$talant_type, "value" => $row[$row['parametr']], "profi" => $row['sportsman_prof'], "building_k" => $building_koef);
-        //echo("I=".$i."<br>");
-        //echo("<pre>");     
+          //echo("I=".$i."<br>");
+          //echo("<pre>");     
              //print_r($current_player);
              //echo("</pre>");
             $new_data=rsm_training_test($current_player);        
@@ -538,6 +530,8 @@ WHERE team_id = ".$team_id." ";
             $sql='UPDATE rsm_sportsman SET overall_rating = '.$new_or.' where sportsman_id='.$sportsman_id;//Update sportsman data
             $query = $this->db->query($sql);
             
+            
+            
             //получаем текущий день
             $sql_day = 'SELECT * FROM `rsm_live` WHERE `id` = 1';
             $query_day = $this->db->query($sql_day);
@@ -552,7 +546,26 @@ WHERE team_id = ".$team_id." ";
           $i++;
       }
       //} 
-        //
+        //восстанавливаем энергию
+        $sql_nrg = "SELECT * FROM  `rsm_infrastructure` 
+        LEFT OUTER JOIN rsm_infrastructure_building_level ON rsm_infrastructure.building_level_id = rsm_infrastructure_building_level.building_level_id
+        WHERE  rsm_infrastructure.building_id = 6 AND team_id = ".$row['team_id']." ";
+        //print($sql_nrg."<br>");
+        $query_nrg = $this->db->query($sql_nrg);
+        $query_nrg = $query_nrg->result_array();
+        $query_nrg = $query_nrg[0];
+        
+        //print_r($query_nrg);
+        
+        $nrg_delta = $query_nrg['building_e1'];
+        
+        $new_sp_nrg = $row['phys_energy'] + $nrg_delta;
+        if ($new_sp_nrg > 99) {
+          $new_sp_nrg = 99;
+        }
+        
+        $sql_nrg_upd = "UPDATE `rsm_sportsman` SET  `phys_energy` =  '".$new_sp_nrg."' WHERE  `sportsman_id` = ".$row['sportsman_id'].";";
+        $this->db->query($sql_nrg_upd);
       } 
     }
     
@@ -756,7 +769,7 @@ WHERE team_id = ".$team_id." ";
             $this->db->query($sql);
             
             //track
-            $sql = "INSERT INTO `rsm_track` (`track_id`, `user_id`, `name_en`, `track_logo`, `track_type`, `track_tech`, `track_is_renamed_by_owner`) VALUES (NULL, '".$team_all."', 'Test track ".$team_all."', '', '1', '1', '0');";
+            $sql = "INSERT INTO `rsm_track` (`track_id`, `user_id`, `name_en`, `track_logo`, `track_type`, `track_tech`, `track_is_renamed_by_owner`, `track_capacity`) VALUES (NULL, '".$team_all."', 'Test track ".$team_all."', '', '1', '1', '0', '100');";
             $this->db->query($sql);
               
             $sql = "INSERT INTO `rsm_league_standings` (`standings_id`, `league_id`, `team_id`, `standings_points`) VALUES (NULL, '".$league_id."', '".$team_all."', '0');";
@@ -1123,7 +1136,7 @@ WHERE team_id = ".$team_id." ";
           foreach ($race_days as $race_day) {
             $race_track_id=$i+($cc-1)*$teams_country;
             $league_id=$j+($cc-1)*$league_num;
-            $sql = "INSERT INTO rsm_race (`race_id`, `day_id`, `league_id`, `track_id`, `race_type`) VALUES (NULL, '".$race_day."', '".$league_id."', '".$race_track_id."', '0')";
+            $sql = "INSERT INTO rsm_race (`race_id`, `day_id`, `league_id`, `track_id`, `race_type`, `race_attendance`) VALUES (NULL, '".$race_day."', '".$league_id."', '".$race_track_id."', '0', '0')";
             $this->db->query($sql);
             $i++;
             //echo $sql;
@@ -1144,11 +1157,42 @@ WHERE team_id = ".$team_id." ";
             $temperature = rand(-5,5);
             $wind_type = rand(0,1);
             $wind_speed = rand(0,7);
-            $fog = rand(0,1);
-            $sun = rand(0,2);
-            $rain = rand(0,1);
-            $snow = rand(0,3);
             $humidity = rand(70,99);
+            
+            $weather_preset = rand(1,4);
+
+            switch ($weather_preset) {
+                case 1: //FOG
+                    $fog = 1;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 2://SUN
+                    $fog = 0;
+                    $sun = rand(1,2);
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 3://RAIN
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 1;
+                    $snow = 0;
+                    break;
+                case 4://SNOW
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = rand(1,3);
+                    break;
+            }
+
+            //$fog = rand(0,1);
+            //$sun = rand(0,2);
+            //$rain = rand(0,1);
+            //$snow = rand(0,3);
+            
             
             $sql = "INSERT INTO `rsm_race_weather` (`rsm_race_weather_id`, `rsm_race_id`, `rsm_race_weather_forecast_id`, `temperature`, `wind_type`, `wind_speed`, `fog_type`, `sun_type`, `rain_type`, `snow_type`, `humidity`) VALUES (NULL, '".$weather_race_id."', '".$weather_race_id."', '".$temperature."', '".$wind_type."', '".$wind_speed."', '".$fog."', '".$sun."', '".$rain."', '".$snow."', '".$humidity."');";
             //print($sql."<br>");
@@ -1158,11 +1202,37 @@ WHERE team_id = ".$team_id." ";
             $temperature = rand(-5,5);
             $wind_type = rand(0,1);
             $wind_speed = rand(0,7);
-            $fog = rand(0,1);
-            $sun = rand(0,2);
-            $rain = rand(0,1);
-            $snow = rand(0,3);
             $humidity = rand(70,99);
+            
+            $weather_preset = rand(1,4);
+
+            switch ($weather_preset) {
+                case 1: //FOG
+                    $fog = 1;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 2://SUN
+                    $fog = 0;
+                    $sun = rand(1,2);
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 3://RAIN
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 1;
+                    $snow = 0;
+                    break;
+                case 4://SNOW
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = rand(1,3);
+                    break;
+            }
+            
             
             $sql = "INSERT INTO `rsm_race_weather_forecast` (`rsm_race_weather_forecast_id`, `rsm_race_id`, `temperature`, `wind_type`, `wind_speed`, `fog_type`, `sun_type`, `rain_type`, `snow_type`, `humidity`) VALUES (NULL, '".$weather_race_id."', '".$temperature."', '".$wind_type."', '".$wind_speed."', '".$fog."', '".$sun."', '".$rain."', '".$snow."', '".$humidity."');";
             mysql_query($sql);
@@ -1646,29 +1716,82 @@ WHERE rsm_league_promotion_rule.league_level_to = ".$query3['league_lvl']." AND 
   }
   
   function insert_race($day_id, $league_id, $track_id, $race_type) {
-    $sql = "INSERT INTO `rsm_race` (`race_id`, `day_id`, `league_id`, `track_id`, `race_status`, `race_type`) VALUES (NULL, '".$day_id."', '".$league_id."', '".$track_id."', '0', '".$race_type."');";
+    $sql = "INSERT INTO `rsm_race` (`race_id`, `day_id`, `league_id`, `track_id`, `race_status`, `race_type`, `race_attendance`) VALUES (NULL, '".$day_id."', '".$league_id."', '".$track_id."', '0', '".$race_type."', '0');";
     $this->db->query($sql);
     $last_id = mysql_insert_id();
     $weather_race_id = $last_id;
     $temperature = rand(-5,5);
     $wind_type = rand(0,1);
     $wind_speed = rand(0,7);
-    $fog = rand(0,1);
-    $sun = rand(0,2);
-    $rain = rand(0,1);
-    $snow = rand(0,3);
     $humidity = rand(70,99);
+
+            $weather_preset = rand(1,4);
+
+            switch ($weather_preset) {
+                case 1: //FOG
+                    $fog = 1;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 2://SUN
+                    $fog = 0;
+                    $sun = rand(1,2);
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 3://RAIN
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 1;
+                    $snow = 0;
+                    break;
+                case 4://SNOW
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = rand(1,3);
+                    break;
+            }    
+    
+    
     $sql = "INSERT INTO `rsm_race_weather` (`rsm_race_weather_id`, `rsm_race_id`, `rsm_race_weather_forecast_id`, `temperature`, `wind_type`, `wind_speed`, `fog_type`, `sun_type`, `rain_type`, `snow_type`, `humidity`) VALUES (NULL, '".$weather_race_id."', '".$weather_race_id."', '".$temperature."', '".$wind_type."', '".$wind_speed."', '".$fog."', '".$sun."', '".$rain."', '".$snow."', '".$humidity."');";
     $this->db->query($sql);
     //forecast
     $temperature = rand(-5,5);
     $wind_type = rand(0,1);
     $wind_speed = rand(0,7);
-    $fog = rand(0,1);
-    $sun = rand(0,2);
-    $rain = rand(0,1);
-    $snow = rand(0,3);
     $humidity = rand(70,99);
+
+            $weather_preset = rand(1,4);
+
+            switch ($weather_preset) {
+                case 1: //FOG
+                    $fog = 1;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 2://SUN
+                    $fog = 0;
+                    $sun = rand(1,2);
+                    $rain = 0;
+                    $snow = 0;
+                    break;
+                case 3://RAIN
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 1;
+                    $snow = 0;
+                    break;
+                case 4://SNOW
+                    $fog = 0;
+                    $sun = 0;
+                    $rain = 0;
+                    $snow = rand(1,3);
+                    break;
+            }    
+    
       
     $sql = "INSERT INTO `rsm_race_weather_forecast` (`rsm_race_weather_forecast_id`, `rsm_race_id`, `temperature`, `wind_type`, `wind_speed`, `fog_type`, `sun_type`, `rain_type`, `snow_type`, `humidity`) VALUES (NULL, '".$weather_race_id."', '".$temperature."', '".$wind_type."', '".$wind_speed."', '".$fog."', '".$sun."', '".$rain."', '".$snow."', '".$humidity."');";
     $this->db->query($sql);
@@ -1697,7 +1820,7 @@ WHERE rsm_league_promotion_rule.league_level_to = ".$query3['league_lvl']." AND 
         
         for ($i=0; $i<3; $i++) {
           //print($sp_list[$i]->sportsman_id."<br>");
-          $sql = "INSERT INTO `rsm_race_sportsman_list` (`rsm_race_sportsman_list_id`, `race_id`, `team_id`, `sportsman_id`, `race_place`, `race_points`, `race_shots_missed`, `race_shots_stand`, `race_shots_lay`, `top3`, `top8`, `top_speed`) VALUES (NULL, '".$temp_race['race_id']."', '".$temp_team['team_id']."', '".($sp_list[$i]->sportsman_id)."', '0', '0', '0', '0', '0', '0', '0', '0');";
+          $sql = "INSERT INTO `rsm_race_sportsman_list` (`rsm_race_sportsman_list_id`, `race_id`, `team_id`, `sportsman_id`, `race_place`, `race_points`, `race_shots_missed`, `race_shots_stand`, `race_shots_lay`, `top3`, `top8`, `top_speed`, `ski_time`, `overall_time`) VALUES (NULL, '".$temp_race['race_id']."', '".$temp_team['team_id']."', '".($sp_list[$i]->sportsman_id)."', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');";
          // print($sql);
         $this->db->query($sql);
 
