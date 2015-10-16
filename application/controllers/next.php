@@ -206,7 +206,7 @@ class Next extends RSM_Controller {
 		else { //выделить в функцию
 			$this->Next_model->increase_current_day($next_day); 
 		
-			$data['training_result']=$this->Next_model->increase_training();//вызвали ф-ию увеличения параметров  
+			$data['training_result']=$this->Next_model->increase_training();//вызвали ф-ию увеличения параметров + энергия 
 			$this->Next_model->update_building_days(); //Update building days
 			$this->Next_model->update_stadium_days(); //Update stadium days
 			$this->Next_model->update_sportsman_age(); //Update sportsman age
