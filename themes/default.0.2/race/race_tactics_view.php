@@ -7,8 +7,13 @@
 							<h1>Tactics</h1>
 							<div class="help-on-page"><?php include $rsm['th_path']."/_common/tpl-help-on-page.php";?></div>
 						</div>
-						<div class="panel-body">					
+						<div class="panel-body">
+							
+							
+							
 							<?php
+								//!!!! Old Page !!!!
+								
 								//print_r($race_team_sportsman_list);
 									//print_r($race_info);
 									//$hidden = array('race_id' => $race_info[0]['race_id']);
