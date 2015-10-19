@@ -68,6 +68,11 @@ table
 	margin-bottom:0.5em;
 }
 
+table.table-td1strong tr td:first-child
+{
+	font-weight:bold;
+}
+
 div.panel-body table
 {
 	margin:0px;
