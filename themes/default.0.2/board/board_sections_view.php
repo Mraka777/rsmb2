@@ -3,7 +3,7 @@
 $bs_url="http://".$_SERVER['SERVER_NAME']."/assets/bootstrap";
 $th_url= "http://".$_SERVER['SERVER_NAME']."/themes/".$current_theme;
 $th_path = $_SERVER['DOCUMENT_ROOT']."/themes/".$current_theme;
-$img_url = "http://www.biathlon-manager.com/themes/".$current_theme;
+$img_url = "http://".$_SERVER['SERVER_NAME']."/themes/".$current_theme;
 
 ?>
 
