@@ -70,41 +70,41 @@
 													<td><strong>Owner</strong></td>
 													<td>
 														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a hreff="">Mraka</a>
+														<a hreff=""><?php echo $race_prev_track_info['username']; ?></a>
 													</td>
 												</tr>
 												<tr>
 													<td><strong>Home Club</strong></td>
 													<td>
 														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="">Moscow Steeld Dragons</td>
+														<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$race_prev_track_info['team_id'])); ?>"><?php echo $race_prev_track_info['team_name']; ?></td>
 												</tr>
 												<tr>
 													<td><strong>Title</strong></td>
 													<td>
 														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="/<?php echo($rsm['base_url']); ?>/infrastructure/track/<?php echo($race_info['track_id']);?>"><?php echo($race_info['name_en']);?></a>
+														<a href=""><?php echo $race_prev_track_info['name_en']; ?></a>
 													</td>
 												</tr>
 												<tr>
 													<td><strong>Capacity</strong></td>
-													<td>?????</td>
+													<td><?php echo $race_prev_track_info['track_capacity']; ?></td>
 												</tr>
 												<tr>
 													<td><strong>General type</strong></td>
-													<td><?php echo $race_info['rsm_track_type_name'];?></td>
+													<td><?php echo $race_prev_track_info['track_type'];?></td>
 												</tr>
 												<tr>
 													<td><strong>Pl / Ri / Des</strong></td>
 													<td>
-													<?php echo $race_info['rsm_track_type_plain']*100;?>%
-													 / <?php echo $race_info['rsm_track_type_rise']*100;?>%
-													 / <?php echo $race_info['rsm_track_type_descent']*100;?>%
+													<?php echo $race_prev_track_info['track_plain'];?>%
+													 / <?php echo $race_prev_track_info['track_rise'];?>%
+													 / <?php echo $race_prev_track_info['track_descent'];?>%
 													</td>
 												</tr>
 												<tr>
 													<td><strong>Difficulty</strong></td>
-													<td>????</td>
+													<td><?php //print_r($race_prev_track_info); ?></td>
 												</tr>
 											</tbody>
 										</table>
@@ -120,34 +120,34 @@
 											<tbody>
 												<tr>
 													<td><strong>Temperature</strong></td>
-													<td><?php echo $race_info['temperature'];?><sup>o</sup></td>
+													<td><?php echo $race_weather_forecast['temperature'];?><sup>o</sup></td>
 													<!--glyphicon glyphicon-tint
 													glyphicon glyphicon-certificate
 													 glyphicon glyphicon-cloud-download-->
 												</tr>
 												<tr>
 													<td><strong>Humidity</strong></td>
-													<td><?php echo $race_info['humidity'];?>%</td>
+													<td><?php echo $race_weather_forecast['humidity'];?>%</td>
 												</td>
 												<tr>
 													<td><strong>Wind</strong></td>
-													<td><?php echo $race_info['wind_type_descr'];?>, <?php echo $race_weather_forecast['wind_speed'];?> m/s</td>
+													<td><?php echo $race_weather_forecast['wind_type_descr'];?>, <?php echo $race_weather_forecast['wind_speed'];?> m/s</td>
 												</tr>
 												<tr>
 													<td><strong>Sun</strong></td>
-													<td><?php echo $race_info['sun_type_descr'];?></td>
+													<td><?php echo $race_weather_forecast['sun_type_descr'];?></td>
 												</td>
 												<tr>
 													<td><strong>Fog</strong></td>
-													<td><?php echo $race_info['fog_type_descr'];?></td>
+													<td><?php echo $race_weather_forecast['fog_type_descr'];?></td>
 												</td>
 												<tr>
 													<td><strong>Snow</strong></td>
-													<td><?php echo $race_info['snow_type_descr'];?></td>
+													<td><?php echo $race_weather_forecast['snow_type_descr'];?></td>
 												</td>
 												<tr>
 													<td><strong>Rain</strong></td>
-													<td><?php echo $race_info['rain_type_descr'];?></td>
+													<td><?php echo $race_weather_forecast['rain_type_descr'];?></td>
 												</td>												
 											</tbody>
 										</table>
