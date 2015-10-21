@@ -29,11 +29,36 @@ class Infrastructure_model extends CI_Model {
     }
     function get_stadium_info($team_id)
     {
-        $query = $this->db->query('SELECT * FROM rsm_stadium
+        $sql = "SELECT * FROM rsm_stadium
         LEFT OUTER JOIN rsm_stadium_building ON rsm_stadium.stadium_building_id=rsm_stadium_building.rsm_stadium_building_id
         LEFT OUTER JOIN rsm_stadium_building_level ON rsm_stadium.stadium_building_level_id=rsm_stadium_building_level.rsm_stadium_building_level_id
-        WHERE `team_id` = '.$team_id.' ORDER BY  `rsm_stadium_id` ASC');
-        return $query->result();
+        WHERE `team_id` = ".$team_id." ORDER BY  `rsm_stadium_id` ASC";
+        //print($sql);
+        $query = $this->db->query($sql);
+        $query = $query->result_array();
+        $i = 0;
+        foreach ($query as $temp) {
+          if ($temp['stadium_building_days_next'] > 0 ) { //under construction
+            $query[$i]['status'] = "Under construction, ".$temp['stadium_building_days_next']." day(s)";
+            $query[$i]['building_effect'] = "<i>Construction ".$temp['stadium_building_days_next']." day(s)</i>";
+          }
+          else {
+            if ($temp['stadium_building_level_id'] > 0) {
+              $query[$i]['status'] = "In use";  
+            }
+            else {
+              $query[$i]['status'] = "Not Available";
+            }
+            
+          }
+          $i++;
+        }
+        
+        //$query = $query[0];
+        //print("<pre>");
+        //print_r($query);
+        //print("</pre>");
+        return $query;
     }
     //detailed view
     function get_infrastructure_detailed($facility_level_id){
@@ -45,7 +70,36 @@ class Infrastructure_model extends CI_Model {
       $query = $query[0];
       return $query;
     }
-    
+ 
+    function get_track_info($team_id){
+      $sql = "SELECT rsm_track.*, rsm_team.*, rsm_country.*, users.username FROM rsm_track
+						LEFT OUTER JOIN rsm_track_type ON rsm_track.track_type = rsm_track_type.rsm_track_type_id
+            LEFT OUTER JOIN rsm_team ON rsm_track.user_id = rsm_team.team_id
+						LEFT OUTER JOIN rsm_country ON rsm_team.country_id = rsm_country.country_id
+            LEFT OUTER JOIN rsm_user ON rsm_team.team_id = rsm_user.rsm_id
+          	LEFT OUTER JOIN users ON rsm_user.ion_id = users.id            
+						WHERE rsm_track.user_id=".$team_id;" ";
+            //print($sql);
+      $query = $this->db->query($sql);
+      $query = $query->result_array();
+      $query = $query[0];
+			switch ($query['track_type']) {
+					case 1:
+							$query['track_type'] = 'Plain';
+							$query['track_plain']=60;
+							$query['track_rise']=20;
+							$query['track_descent']=20;
+							break;
+
+					default:
+							$query['track_type'] = 'Unknown';
+							$query['track_plain']=0;
+							$query['track_rise']=0;
+							$query['track_descent']=0;
+							break;
+			}      
+      return $query;
+    }   
     
     function build_stadium_choice($team_id, $stadium_id)
     {
