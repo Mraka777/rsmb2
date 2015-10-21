@@ -25,6 +25,9 @@ class Infrastructure extends RSM_Controller {
 			$this->user_bm_id=$rsm_user;
 			//END GET TEAM ID BY AUTH ID
 			
+			//
+			$this->load->helper('rsm_link');
+			
 			$this->load->model('Infrastructure_model');
 			//$this->load->model('Office_model');
 			$menu1 = $this->uri->segment(2);
@@ -51,10 +54,12 @@ class Infrastructure extends RSM_Controller {
 	{
 		if ( $this->ion_auth->logged_in() ) 
 		{
+			$this->data['infrastructure']=$this->Infrastructure_model->get_infrastructure_info($this->user_bm_id);
+			$this->data['track_info']=$this->Infrastructure_model->get_track_info($this->user_bm_id);
+			$this->data['stadium']=$this->Infrastructure_model->get_stadium_info($this->user_bm_id);
 			$this->load->view($this->data['current_theme'].'/infrastructure/infrastructure_index_view.php', $this->data);
 		}
 	}	
-
 	
 	public function facilities()
 	{		
@@ -127,6 +132,7 @@ class Infrastructure extends RSM_Controller {
 	{
 		if ( $this->ion_auth->logged_in() ) 
 			{
+				$this->data['track_info']=$this->Infrastructure_model->get_track_info($this->user_bm_id);
 				$this->data['stadium']=$this->Infrastructure_model->get_stadium_info($this->user_bm_id);
 				$this->load->view($this->data['current_theme'].'/infrastructure/infrastructure_stadium_view.php', $this->data);
 			}
