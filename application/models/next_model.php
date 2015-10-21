@@ -267,7 +267,8 @@ WHERE `team_id` = ".$team_id." ";
           }
           else $stadium_cost = $row['maintenance_cost'] + $stadium_cost;
         }
-        //echo("Stad cost=".$stadium_cost." ");
+        
+        //echo("Stad cost=".$stadium_cost." <br>");
         $this->Next_model->change_balance($team_id, 11, $stadium_cost);
         //return($stadium_cost);
       }
@@ -1019,12 +1020,13 @@ WHERE team_id = ".$team_id." ";
         }
         
         //create stadium
-        $i=1;$j=1;$stad_id = array ( 1=>1, 7, 8, 9, 10, 12);
+        $i=1;$j=1;$level_id = array ( 1=>1, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26);
         for ($i = 1; $i <= $teams_country; $i++) {
-          for ($j = 1; $j <= 6; $j++) {
-          $sql = "INSERT INTO `rsm_stadium` (`rsm_stadium_id`, `team_id`, `stadium_building_id`, `stadium_building_level_id`, `stadium_building_days_next`) VALUES (NULL, '".($i+($cc-1)*$teams_country)."', '".$stad_id[$j]."', '".$j."', '0');";
+          for ($j = 1; $j <= 13; $j++) {
+          $sql = "INSERT INTO `rsm_stadium` (`rsm_stadium_id`, `team_id`, `stadium_building_id`, `stadium_building_level_id`, `stadium_building_days_next`) VALUES (NULL, '".($i+($cc-1)*$teams_country)."', '".$j."', '".$level_id[$j]."', '0');";
           $this->db->query($sql);
-          } 
+          }
+          
         }
   
         //FINANCE *** FINANCE
@@ -1062,7 +1064,7 @@ WHERE team_id = ".$team_id." ";
           $stadium_cost = 0;
           $team_id = $j + ($cc-1)*$teams_country;
           
-          $sql = "SELECT maintenance_cost FROM `rsm_stadium_building_level` WHERE `stadium_building_level` = 1";
+          $sql = "SELECT maintenance_cost FROM `rsm_stadium_building_level` WHERE `stadium_building_level` = 1 AND stadium_building_id = 1";
           $res=mysql_query($sql) or die(mysql_error());
           While ($stad_cost = mysql_fetch_row($res)){
             $stadium_cost = $stadium_cost + $stad_cost[0];
