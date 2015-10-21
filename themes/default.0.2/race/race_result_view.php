@@ -46,7 +46,7 @@
 												<td style="font-weight:bold;">Home Club</td>
 												<td>
 													<a href="#"><img class="flag" src="/assets/images/flag/<?php echo($track_data['logo']); ?>" title="<?php echo($track_data['nameb_en']); ?>"></a>
-													<a href="/<?php print($language_link);?>/team/view/<?php echo($track_data['track_team_id']); ?>"><?php echo($track_data['track_team_name']); ?></a>
+													<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$track_data['track_team_id']));?>"><?php echo($track_data['track_team_name']); ?></a>
 												</td>
 												<td style="font-weight:bold;">Humidity&Wind</td> <td><?php print($race_weather['humidity']); ?>%, <?php print($race_weather['wind_speed']); ?> m/s</td>
 											</tr>
@@ -86,7 +86,7 @@
 												for($i=0;$i<8;$i++) { ?>
 												<tr>
 													<td style="font-weight:bold;"><?php echo ($i+1);?></td>
-													<td><img src="/images/flag/<?php echo $top8_team_pts[$i]['logo'];?>"> <a href="/<?php print($language_link);?>/team/view/<?php echo $top8_team_pts[$i]['team_id'];?>"><?php echo $top8_team_pts[$i]['team_name'];?></a></td>
+													<td><img src="/images/flag/<?php echo $top8_team_pts[$i]['logo'];?>"> <a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$top8_team_pts[$i]['team_id']));?>"><?php echo $top8_team_pts[$i]['team_name'];?></a></td>
 													<td><?php echo $top8_team_pts[$i]['race_points'];?></td>
 												</tr>
 												<?php } ?>
@@ -114,7 +114,7 @@
 												for($i=0;$i<8;$i++) { ?>
 												<tr>
 													<td style="font-weight:bold;"><?php echo ($i+9);?></td>
-													<td><img src="/images/flag/<?php echo $next8_team_pts[$i]['logo'];?>"> <a href="/<?php print($language_link);?>/team/view/<?php echo $next8_team_pts[$i]['team_id'];?>"><?php echo $next8_team_pts[$i]['team_name'];?></a></td>
+													<td><img src="/images/flag/<?php echo $next8_team_pts[$i]['logo'];?>"> <a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$next8_team_pts[$i]['team_id']));?>"><?php echo $next8_team_pts[$i]['team_name'];?></a></td>
 													<td><?php echo $next8_team_pts[$i]['race_points'];?></td>
 												</tr>
 												<?php } ?>
@@ -138,7 +138,7 @@
 													</td>
 														<td>
 														<a href="" title="Russia"><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="/<?php print($language_link);?>/player/view/12" title="Yaroslav Lebedev">Lebedev, Yaroslav</a>
+														<a href="/<?php print($language_link);?>/player/view/12" title="Yaroslav Lebedev">Lebedev, Yaroslav*</a>
 													</td>
 												</tr>
 												<tr>
@@ -161,7 +161,7 @@
 													</td>
 														<td>
 														<a href="" title="Russia"><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="<?php print($race_sniper['nameb_en']); ?>"></a>
-														<a href="/<?php print($language_link);?>/player/view/<?php print($race_sniper['sportsman_id']); ?>" title="<?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?>"><?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?></a>
+														<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'player', 'id'=>$race_sniper['sportsman_id']));?>" title="<?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?>"><?php print($race_sniper['name1']." ");print($race_sniper['name2']); ?></a>
 													</td>
 												</tr>
 												<tr>
@@ -184,7 +184,7 @@
 													</td>
 														<td>
 														<a href="" title="<?php print($race_best_ski['nameb_en']); ?>"><img class="flag" src="/assets/images/flag/<?php print($race_best_ski['logo']); ?>" title="<?php print($race_best_ski['nameb_en']); ?>"></a>
-														<a href="/<?php print($language_link);?>/player/view/<?php print($race_best_ski['sportsman_id']); ?>" title="<?php print($race_best_ski['name1']." ");print($race_best_ski['name2']); ?>"><?php print($race_best_ski['name1']." ");print($race_best_ski['name2']); ?></a>
+														<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'player', 'id'=>$race_best_ski['sportsman_id']));?>" title="<?php print($race_best_ski['name1']." ");print($race_best_ski['name2']); ?>"><?php print($race_best_ski['name1']." ");print($race_best_ski['name2']); ?></a>
 													</td>
 												</tr>
 												<tr>
@@ -233,11 +233,11 @@
 												<td><strong><?php echo($i+1);?></strong></td>
 												<td style="white-space: nowrap;">
 													<img src="/images/flag/icons-flag-ru.png">
-													<a href="/<?php echo($language_link); ?>/player/view/<?php echo $sportsman['sportsman_id']; ?>"><?php echo $sportsman['name2']; ?> <?php echo $sportsman['name1'][0]; ?>.</a>
+													<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'player', 'id'=>$sportsman['sportsman_id']));?>"><?php echo $sportsman['name2']; ?> <?php echo $sportsman['name1'][0]; ?>.</a>
 												</td>
 												<td style="white-space: nowrap;">
 													<img src="/images/flag/icons-flag-ru.png">
-													<a href="/<?php echo($language_link); ?>/team/view/<?php echo $sportsman['team_id']; ?>"><?php echo $sportsman['team_name']; ?></a>
+													<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$sportsman['team_id']));?>"><?php echo $sportsman['team_name']; ?></a>
 												</td>
 												<td><?php echo gmdate('H:i:s', $sportsman['overall_time']); ?></td>
 												<td><?php echo gmdate('H:i:s', $sportsman['behind']);?></td>
