@@ -155,7 +155,7 @@
 														<a href=""><img class="flag" src="/assets/images/flag/<?php echo($race['logo']);?>" title="Russia"></a>
 														<a href="/<?php echo($rsm_base_url); ?>/infrastructure/track/<?php echo($race['track_id']);?>"><?php echo($race['name_en']);?></a>
 													</td>
-													<td><a href="/<?php echo($rsm_base_url); ?>/race/preview/<?php echo($race['race_id']);?>"><span class="glyphicon glyphicon-list-alt"></span> Report</a></td>
+													<td><a href="/<?php echo($rsm_base_url); ?>/race/preview/<?php echo($race['race_id']);?>"><span class="glyphicon glyphicon-list-alt"></span> Preview</a></td>
 												</tr>
 												<?php } ?>
 
