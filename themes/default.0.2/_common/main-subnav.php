@@ -9,7 +9,7 @@
 												<span class="icon-bar"></span>
 												<span class="icon-bar"></span>
 										</button>
-										<a class="navbar-brand" href="" style="">
+										<a class="navbar-brand" href="/<?php echo($language_link."/"); print($top_menu[0]['level1']); ?>" style="">
 											<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 											<strong><?php
 											if (isset($top_menu[0]['level1_view'])) {
