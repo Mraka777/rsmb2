@@ -29,6 +29,9 @@ class Race extends RSM_Controller {
 			$this->user_bm_id=$rsm_user;
 			//END GET TEAM ID BY AUTH ID
 			
+			//
+			$this->load->helper('rsm_link');
+			
 			$this->load->model('Race_model');
 			//$this->load->model('Office_model');
 			$menu1 = $this->uri->segment(2);
@@ -59,6 +62,7 @@ class Race extends RSM_Controller {
 		//print($this->session->userdata('language')."<br><br>");
 		//print_r($data);
 		$this->load->helper('form');
+		$this->load->helper('rsm_link');
 		
 		if ( $this->ion_auth->logged_in() ) 
 		{
@@ -66,14 +70,16 @@ class Race extends RSM_Controller {
 			$current_day=$this->General_model->get_current_season_date();
 			//print_r($current_day);
 			//получим данные - есть ли гонка сегодня
-			$this->data['race_info']=$this->Race_model->get_next_race_info($current_day['day_id'], $this->user_bm_id);
+			$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', $current_day['day_id'], $this->user_bm_id);
 			//print_r($this->data['race_info']);
 			if ($this->data['race_info'][0]['race_status'] == '0') {
+				$this->data['race_prev_track_info']=$this->Race_model->get_race_preview_track_info($this->data['race_info'][0]['race_id']);
 				$this->data['race_weather_forecast']=$this->Race_model->get_race_weather_foreacast($this->data['race_info'][0]['race_id']);
 				$this->data['race_team_sportsman_list']=$this->Race_model->get_team_race_sportsman_list($this->data['race_info'][0]['race_id'], $this->user_bm_id);
 				$this->load->view($this->data['current_theme'].'/race/race_index_view.php', $this->data);
 			}
 			elseif ($this->data['race_info'][0]['race_status'] == '1') {
+				$this->data['race_prev_track_info']=$this->Race_model->get_race_preview_track_info($this->data['race_info'][0]['race_id']);
 				$this->data['race_result']=$this->Race_model->get_race_result($this->data['race_info'][0]['race_id']);
 				$this->data['race_result_shooting']=$this->Race_model->get_race_result_shooting($this->data['race_info'][0]['race_id']);
 				$this->load->view($this->data['current_theme'].'/race/race_result_view.php', $this->data);
@@ -88,6 +94,8 @@ class Race extends RSM_Controller {
 	}
 	
 	public function report($race_id) {
+		
+		
 		if ( $this->ion_auth->logged_in() ) 
 		{
 			$this->data['top8_team_pts']=$this->Race_model->get_top8_team_pts($race_id);
@@ -103,6 +111,20 @@ class Race extends RSM_Controller {
 			$this->load->view($this->data['current_theme'].'/race/race_result_view.php', $this->data);
 		}
 	}
+	
+	public function preview($race_id) {
+		$this->load->helper('rsm_link');
+		
+		if ( $this->ion_auth->logged_in() ) 
+		{
+			$this->data['race_info']=$this->Race_model->get_next_race_info('race_id', $race_id, $this->user_bm_id);
+			$this->data['race_prev_track_info']=$this->Race_model->get_race_preview_track_info($race_id);
+			$this->data['race_weather_forecast']=$this->Race_model->get_race_weather_foreacast($race_id);
+			$this->data['race_team_sportsman_list']=$this->Race_model->get_team_race_sportsman_list($race_id, $this->user_bm_id);
+			
+			$this->load->view($this->data['current_theme'].'/race/race_index_view.php', $this->data);
+		}
+	}	
 	
 	public function calendar() {
 		if ( $this->ion_auth->logged_in() ) 
