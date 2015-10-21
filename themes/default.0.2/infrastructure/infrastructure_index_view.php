@@ -19,87 +19,59 @@
 												<tr>
 													<td>Title</td>
 													<td>
-														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="">Test Track</a>
+														<a href=""><img class="flag" src="/assets/images/flag/<?php print $track_info['logo']; ?>" title="Russia"></a>
+														<a href=""><?php print $track_info['name_en']; ?></a>
 													</td>
 													</td>
 												</tr>
 												<tr>
 													<td>Owner</td>
 													<td>
-														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a hreff="">Mraka</a>
+														<a href=""><img class="flag" src="/assets/images/flag/<?php print $track_info['logo']; ?>" title="Russia"></a>
+														<a hreff=""><?php print $track_info['username']; ?></a>
 													</td>
 												</tr>
 												<tr>
 													<td>Home club</td>
 													<td>
-														<a href=""><img class="flag" src="/assets/images/flag/icons-flag-ru.png" title="Russia"></a>
-														<a href="">Moscow Steel Dragons</td>
+														<a href=""><img class="flag" src="/assets/images/flag/<?php print $track_info['logo']; ?>" title="Russia"></a>
+														<a href="<?php get_permalink(array('lng'=>$language_link, 'object'=>'team', 'id'=>$track_info['team_id'])); ?>"><?php print $track_info['team_name']; ?></td>
 													</td>
 												</tr>
 												<tr>
 													<td>Capacity</td>
-													<td>10000</td> 
+													<td><?php print $track_info['track_capacity']; ?></td> 
 												</tr>
 												<tr>
 													<td>General type</td>
-													<td>Plain</td>
+													<td><?php print $track_info['track_type']; ?></td>
 												</tr>
 												<tr>
 													<td>Pl / Ri / Des</td>
-													<td>60% / 20% / 20%</td>
+													<td><?php print $track_info['track_plain']; ?>% / <?php print $track_info['track_rise']; ?>% / <?php print $track_info['track_descent']; ?>%</td>
 												</tr>
 												<tr>
 													<td>Difficulty</td>
-													<td>10</td>
+													<td>-</td>
 												</tr>
 												<tr>
-													<td colspan="2" class="rsm-table-row-naming" style="text-align:center;">Quality&PR</td>
+													<td colspan="2" class="rsm-table-row-naming" style="text-align:center;">Quality & PR</td>
 												</tr>
+												<?php for ($i = 3; $i<=7; $i++) {?>
 												<tr>
-													<td>Media center</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
+													<td><?php print $stadium[$i]['namef_en']; ?></td>
+													<td><?php rate_stars($th_url,$stadium[$i]['stadium_building_level'],1);?></td>
 												</tr>
+												<?php } ?>												
 												<tr>
-													<td>Video panel</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
+													<td colspan="2" class="rsm-table-row-naming" style="text-align:center;">Comfort & Commercial</td>
 												</tr>
+												<?php for ($i = 8; $i<=12; $i++) {?>
 												<tr>
-													<td>Light</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
+													<td><?php print $stadium[$i]['namef_en']; ?></td>
+													<td><?php rate_stars($th_url,$stadium[$i]['stadium_building_level'],1);?></td>
 												</tr>
-												<tr>
-													<td>Snow machines</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td>Shooting Range</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td colspan="2" class="rsm-table-row-naming" style="text-align:center;">Comfort&Commercial</td>
-												</tr>
-												<tr>
-													<td>Club Museum</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td>Shops</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td>Food court</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td>Parking</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
-												<tr>
-													<td>Toilets</td>
-													<td><?php rate_stars($th_url,5,1);?></td>
-												</tr>
+												<?php } ?>	
 											</tbody>
 										</table>
 									</div>
@@ -126,24 +98,24 @@
 												</tr>
 												<tr>
 													<td style="width:40%"><span class="glyphicon glyphicon-education"></span> Training base</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[0]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[0]['building_level']; ?></td>
+													<td><?php echo $infrastructure[0]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[0]['building_e2']; ?></td>
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-home"></span> Service Dept.</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[1]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[1]['building_level']; ?></td>
+													<td><?php echo $infrastructure[1]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[1]['building_e2']; ?></td>
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-home"></span> Youth Academy</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[6]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[6]['building_level']; ?></td>
+													<td><?php echo $infrastructure[6]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[6]['building_e2']; ?></td>
 												</tr>
 												
 												<tr>
@@ -151,24 +123,24 @@
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-home"></span> Club Office</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[2]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[2]['building_level']; ?></td>
+													<td><?php echo $infrastructure[2]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[2]['building_e2']; ?></td>
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-search"></span> Scouting dept.</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[4]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[4]['building_level']; ?></td>
+													<td><?php echo $infrastructure[4]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[4]['building_e2']; ?></td>
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-plus-sign"></span> Medical Complex</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[5]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[5]['building_level']; ?></td>
+													<td><?php echo $infrastructure[5]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[5]['building_e2']; ?></td>
 												</tr>
 												
 												<tr>
@@ -176,17 +148,17 @@
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-usd"></span> Economy dept.</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[7]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[7]['building_level']; ?></td>
+													<td><?php echo $infrastructure[7]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[7]['building_e2']; ?></td>
 												</tr>
 												<tr>
 													<td><span class="glyphicon glyphicon-wrench"></span> Maintaince dept.</td>
-													<td style="width:80px;"><?php rate_stars($th_url,5,1);?></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td style="width:80px;"><?php rate_stars($th_url,$infrastructure[3]['building_level'],1);?></td>
+													<td><?php echo $infrastructure[3]['building_level']; ?></td>
+													<td><?php echo $infrastructure[3]['building_e1']; ?></td>
+													<td><?php echo $infrastructure[3]['building_e2']; ?></td>
 												</tr>
 
 											</tbody>
