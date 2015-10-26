@@ -2,7 +2,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <?php
+//unset($core_test);
 
+$core_test=htmlspecialchars($_GET["core_test"]);
+if (isset($core_test)) {
+  if ($core_test == 1){
+    echo('ZZZ');
+   }
+}
+print("CT=".$core_test."<br>");
+
+if (!isset($core_test)) {
+  print("XXX");
+}
 
 $php_start = microtime(true);
 global $bir;
@@ -10,10 +22,28 @@ global $bir;
 require_once('base.php');
 
 
+//get tactic vars
+			$sql_core = "SELECT * FROM rsm_core_settings WHERE `core_settings_id` = 1";
+			$result_core = mysql_query($sql_core) or die(mysql_error());
+			while ($temp = mysql_fetch_assoc($result_core)) {
+				$i = 0;
+				foreach ($temp as $key=>$param) {
+					//print($key." ".$param."<br>");
+					if ($i>0) {
+						$core_settings[$key]=$param;
+					}
+					$i++;
+				}
+			}
+      
+      print("<pre>");
+      print_r($core_settings);
+      print("</pre>");
 //$race_day=htmlspecialchars($_GET["race"]);
 $num_race_in_day = 0;
 
 //получаем текущий день
+
 $sql_cd = "SELECT day_id FROM `rsm_live` WHERE `id` = 1";
 $result_cd = mysql_query($sql_cd) or die(mysql_error());
 while ($cur_cd = mysql_fetch_assoc($result_cd)) {
@@ -36,7 +66,7 @@ $current_time = $current_time - $php_start;
 
 $sql = "SELECT * FROM `rsm_race` 
 LEFT OUTER JOIN rsm_league ON rsm_race.league_id = rsm_league.league_id
-WHERE `day_id` = ".$race_day." AND rsm_league.country_id = ".$country_day." ";//1 - Russia
+WHERE `day_id` = ".$race_day." AND rsm_league.country_id = ".$country_day." LIMIT 0,1 ";//1 - Russia
 //print($sql."<br>");
 $result = mysql_query($sql) or die(mysql_error());
 while ($races_total = mysql_fetch_assoc($result)) {
@@ -192,7 +222,7 @@ while ($races_total = mysql_fetch_assoc($result)) {
   While ($track = mysql_fetch_row($res))
   {
     //attendance
-    $race_attendance = rand(50,$track[2]);
+    $race_attendance = rand(($track[2]/2),$track[2]);
     //print("ATT=".$attendance);
     
     switch ($track[0]) {
@@ -231,7 +261,7 @@ while ($races_total = mysql_fetch_assoc($result)) {
   LEFT OUTER JOIN rsm_team ON rsm_sportsman.team_id = rsm_team.team_id
   LEFT OUTER JOIN rsm_country ON rsm_sportsman.country_id = rsm_country.country_id
   LEFT OUTER JOIN rsm_race_sportsman_tactics ON (rsm_sportsman.sportsman_id = rsm_race_sportsman_tactics.sportsman_id AND rsm_race_sportsman_list.race_id = rsm_race_sportsman_tactics.race_id)
-  WHERE rsm_race_sportsman_list.race_id = '.$race_id.' ';//LIMIT 0, 3
+  WHERE rsm_race_sportsman_list.race_id = '.$race_id.' LIMIT 0,1  ';//LIMIT 0, 3
   
   $res=mysql_query($sql) or die(mysql_error());
   //echo($sql);
@@ -250,23 +280,25 @@ while ($races_total = mysql_fetch_assoc($result)) {
         //$b_data['phys_energy']=$b_data['track_spd'];
         //print("SID=".$b_data['sportsman_id']." NRG=".$b_data['phys_energy']." IMP=".$b_data['rsm_race_sportsman_tactics_importance']."<br>");
         //IMPORTANCE
+        //УЧЕТ ВАЖНОСТИ ТАКТИКИ
         $d_imp = $b_data['rsm_race_sportsman_tactics_importance']*5;
-        
         $k_nrg = $b_data['phys_energy']/100;
         $new_nrg = $b_data['phys_energy'] - $d_imp;
-        
+        //print("T=".$b_data['rsm_race_sportsman_tactics_importance']."<br>");
         switch ($b_data['rsm_race_sportsman_tactics_importance']) {
           case 1:
-            $k_imp = 1;
+            $k_imp = $core_settings['tactics_importance_low']; //низкая важность
             break;
           case 2:
-            $k_imp = 1.05;
+            $k_imp = $core_settings['tactics_importance_medium'];; //средняя важность
             break;
           case 3:
-            $k_imp = 1.1;
+            $k_imp = $core_settings['tactics_importance_high'];; //высокая важность
             break;
         }
+        //print("K_IMP=".$k_imp."<br>");
         
+        //СРАЗУ УБРАЛИ ЭНЕРГИЮ
         $sql = "UPDATE  `rsm_sportsman` SET  `phys_energy` =  '".$new_nrg."' WHERE  `rsm_sportsman`.`sportsman_id` =".$b_data['sportsman_id'].";";
         mysql_query($sql);
         //$penalty=0;
@@ -285,7 +317,48 @@ while ($races_total = mysql_fetch_assoc($result)) {
             // echo('Shot '.$j.'<br>');
             $var=rand(0,100);
             $shooting_acc=$b_data['shoot_tech']*$global['shooting_technique']+$b_data['shoot_acc']*$global['shooting_accuracy'];
-            //echo("SH_ACC=".$b_data['shoot_tech']."<br>");
+            
+            switch ($b_data['rsm_race_sportsman_tactics_shooting']) {
+              case 10:
+                $k_tactics_acc = $core_settings['tactics_shooting_acc_speed_low']; //низкая важность
+                break;
+              case 11:
+                $k_tactics_acc = $core_settings['tactics_shooting_acc_speed_medium']; //средняя
+                break;
+              case 12:
+                $k_tactics_acc = $core_settings['tactics_shooting_acc_speed_high']; //высокая
+                break;
+            }
+            //print("k_tactics_acc=".$k_tactics_acc."<br>");
+
+              switch ($b_data['rsm_race_sportsman_tactics_ski_plain']) {
+                case 4:
+                  $k_tactics_shooting_ski_plain = $core_settings['shooting_acc_ski_plain_low'];
+                  break;
+                case 5:
+                  $k_tactics_shooting_ski_plain = $core_settings['shooting_acc_ski_plain_medium'];
+                  break;
+                case 6:
+                  $k_tactics_shooting_ski_plain = $core_settings['shooting_acc_ski_plain_high'];
+                  break;
+              }
+             //print("k_tactics_shooting_ski_plain=".$k_tactics_shooting_ski_plain."<br>");
+             
+              switch ($b_data['rsm_race_sportsman_tactics_ski_hill']) {
+                case 7:
+                  $k_tactics_shooting_ski_hill = $core_settings['shooting_acc_ski_hill_low'];
+                  break;
+                case 8:
+                  $k_tactics_shooting_ski_hill = $core_settings['shooting_acc_ski_hill_medium'];
+                  break;
+                case 9:
+                  $k_tactics_shooting_ski_hill = $core_settings['shooting_acc_ski_hill_high'];
+                  break;
+              }
+            //print("k_tactics_shooting_ski_hill=".$k_tactics_shooting_ski_hill."<br>");
+            $shooting_acc = $shooting_acc * $k_tactics_acc * $k_tactics_shooting_ski_plain * $k_tactics_shooting_ski_hill;
+            
+            //echo("SH_ACC=".$shooting_acc."<br>");
             if ($var<$shooting_acc) {  //записываем в массив лога стрельбы попал или нет - $bir[$bid]['shooting_log'][$lap][$shoot_num]
               
               $sql_shot_insert = 'INSERT INTO `rsm_logs` (`logs_id`, `race_id`, `sportsman_id`, `lap`, `shot`, `res`) VALUES (NULL, '.$race_id.', '.$b_data['sportsman_id'].', '.$i.', '.$j.', 1)';
@@ -330,20 +403,76 @@ while ($races_total = mysql_fetch_assoc($result)) {
      //echo($sql.'<br>');
       //echo('************************************************************<br>'); 
       //time 4 shooting
-  
+        //расчет времени прицеливания
         $positioning_k=($b_data['shoot_tech']*0.6+$b_data['shoot_calm']*0.3+$b_data['phys_endur']*0.1)/100;         
         //echo('POS K='.$positioning_k.'<br>');
         $positioning_time=$global['positioning_min']+($global['positioning_max']-$global['positioning_min'])*(1-$positioning_k);
-        $positioning_time=round($positioning_time,2); //КОСТЫЛЬ 
+        $positioning_time=round($positioning_time,2); //КОСТЫЛЬ
+        
+        //Учет тактики
+        
+        //$b_data['rsm_race_sportsman_tactics_ski_plain']
+        //$b_data['rsm_race_sportsman_tactics_ski_hill']
+        
+        
+        switch ($b_data['rsm_race_sportsman_tactics_shooting']) {
+          case 10:
+            $k_tactics_positioning = $core_settings['tactics_shooting_pos_low']; //низкая важность
+            break;
+          case 11:
+            $k_tactics_positioning = $core_settings['tactics_shooting_pos_medium']; //средняя
+            break;
+          case 12:
+            $k_tactics_positioning = $core_settings['tactics_shooting_pos_high']; //высокая
+            break;
+        }
+        $positioning_time = $positioning_time * $k_tactics_positioning;
         //echo('POS TIME='.$positioning_time.'<br>');
   
    
         //echo('************************************************************<br>'); 
       
-  
+        //Расчет времени перезарядки
         $kd_min=4;  $kd_max=8;  $kd_technique=0.5;  $kd_calm=0.5;    //влияние параметров на КД, начало просчета КД
         $kd_k=$b_data['shoot_tech']*$kd_technique+$b_data['shoot_calm']*$kd_calm;
-        $kd_time=$kd_min+($kd_max-$kd_min)*(1-$kd_k/100);  
+        $kd_time=$kd_min+($kd_max-$kd_min)*(1-$kd_k/100);
+        switch ($b_data['rsm_race_sportsman_tactics_shooting']) {
+          case 10:
+            $k_tactics_kd_time = $core_settings['tactics_shooting_kd_low'];
+            break;
+          case 11:
+            $k_tactics_kd_time = $core_settings['tactics_shooting_kd_medium'];
+            break;
+          case 12:
+            $k_tactics_kd_time = $core_settings['tactics_shooting_kd_high'];
+            break;
+        }
+        
+              switch ($b_data['rsm_race_sportsman_tactics_ski_plain']) {
+                case 4:
+                  $k_tactics_shooting_kd_ski_plain = $core_settings['tactics_ski_plain_kd_low'];
+                  break;
+                case 5:
+                  $k_tactics_shooting_kd_ski_plain = $core_settings['tactics_ski_plain_kd_medium'];
+                  break;
+                case 6:
+                  $k_tactics_shooting_kd_ski_plain = $core_settings['tactics_ski_plain_kd_high'];
+                  break;
+              } 
+      
+              switch ($b_data['rsm_race_sportsman_tactics_ski_hill']) {
+                case 7:
+                  $k_tactics_shooting_kd_ski_hill = $core_settings['tactics_ski_hill_kd_low'];
+                  break;
+                case 8:
+                  $k_tactics_shooting_kd_ski_hill = $core_settings['tactics_ski_hill_kd_medium'];
+                  break;
+                case 9:
+                  $k_tactics_shooting_kd_ski_hill = $core_settings['tactics_ski_hill_kd_high'];
+                  break;
+              }
+        
+        $kd_time = $kd_time * $k_tactics_kd_time * $k_tactics_shooting_kd_ski_plain * $k_tactics_shooting_kd_ski_hill;
         //echo('KD TIME='.$kd_time.'<br>');
       
       //echo('************************************************************<br>');    
@@ -400,12 +529,46 @@ while ($races_total = mysql_fetch_assoc($result)) {
       //parameters end
       
       //print("")
+      //Расчет скоростей на отрезках и результирующей
       $sportsman_speed_plain=round(($Vmin+($track_speed_plain*$b_data['track_spd']+$track_tech_plain*$b_data['track_tech'])/$Kv_plain),3);
+      
+        switch ($b_data['rsm_race_sportsman_tactics_ski_plain']) {
+          case 4:
+            $k_tactics_ski_plain = 1;
+            break;
+          case 5:
+            $k_tactics_ski_plain = 1.03;
+            break;
+          case 6:
+            $k_tactics_ski_plain = 1.05;
+            break;
+        }
+      $sportsman_speed_plain = $sportsman_speed_plain * $k_tactics_ski_plain;
+      
       //echo("Speed_plain=".$sportsman_speed_plain."<br>");
+        //Учет на подъемах и спусках
+        switch ($b_data['rsm_race_sportsman_tactics_ski_hill']) {
+          case 7:
+            $k_tactics_ski_hill = 1;
+            break;
+          case 8:
+            $k_tactics_ski_hill = 1.03;
+            break;
+          case 9:
+            $k_tactics_ski_hill = 1.05;
+            break;
+        }
+      
+      
       $sportsman_speed_up=round(($Vupmin+($phys_strength_up*$b_data['phys_strength']+$phys_endurance_up*$b_data['phys_endur']+$track_speed_up*$b_data['track_spd']+$track_tech_up*$b_data['track_tech'])/$Kv_up),3);
       //echo("Speed_up=".$sportsman_speed_up."<br>");
+      
+      $sportsman_speed_up = $sportsman_speed_up * $k_tactics_ski_hill;
+      
       $sportsman_speed_down=round(($Vdownmin+($phys_strength_down*$b_data['phys_strength']+$phys_endurance_down*$b_data['phys_endur']+$track_speed_down*$b_data['track_spd']+$track_tech_down*$b_data['track_tech'])/$Kv_down),3);
       //echo("Speed_down=".$sportsman_speed_down."<br>");
+      
+      $sportsman_speed_down = $sportsman_speed_down * $k_tactics_ski_hill;
       
       $speed_result = $sportsman_speed_plain*$track_plain+$sportsman_speed_up*$track_rise+$sportsman_speed_down*$track_descent;
       //add weather influence
@@ -413,9 +576,9 @@ while ($races_total = mysql_fetch_assoc($result)) {
       //echo("weather_total= ".$weather_total."<br>");
       $speed_result=$weather_total*$speed_result;
       //NRG EFFECT
-      $speed_result = $speed_result * $k_nrg * $k_imp;
+      $speed_result = $speed_result * $k_nrg * $k_imp; //учет коэффициентов энергии и важности
       
-      //echo("Speed_result + weather = ".$speed_result."<br>");
+      //echo("SID = ".$b_data['sportsman_id']." Speed_result = ".$speed_result."<br>");
       //$speed_result = 1;
       
       //echo('SPD SRC='.$b_data['track_spd'].' SPD_Total='.$speed_result.' Km/h <br>');
