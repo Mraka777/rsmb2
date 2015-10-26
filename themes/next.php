@@ -15,6 +15,6 @@
       <a href="/core/simple.php?country=1">Race country_id = 1</a><br>
       <a href="/core/simple.php?country=2">Race country_id = 2</a><br><br>
       <a href="/next/generate_season">Generate new season</a><br><br>
-      <a href="/next/logout">Log out</a><br><br>
+      <a href="/next/logout">Log out</a><br><br><br>
       
     </div>

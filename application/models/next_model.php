@@ -2110,14 +2110,100 @@ WHERE rsm_team.team_id =  ".$team_id." ";
     return $query;
   }
  }
+
+ 
  function show_help() {
   $sql = "SELECT * FROM `rsm_page_help` ORDER BY path1";
   //print($sql);
   $query=$this->db->query($sql);
   $query = $query->result_array();
   return $query;
+ }
+ // CORE NEXT
+  function get_core_settings($def) {
+    $sql = "SELECT * FROM `rsm_core_settings` WHERE core_settings_id = ".$def." ";
+    //print($sql);
+    $query=$this->db->query($sql);
+    
+    $query = $query->result_array();
+    $query = $query[0];
+    
+    return $query;
+  
+ } 
+ 
+  function get_test_data($def) {
+    $sql = "SELECT * FROM `rsm_core_sportsman`
+    LEFT OUTER JOIN rsm_core_sportsman_talent ON rsm_core_sportsman.sportsman_id = rsm_core_sportsman_talent.rsm_sportsman_id
+    WHERE sportsman_id = ".$def." ";
+    //print($sql);
+    $query=$this->db->query($sql);
+    
+    $query = $query->result_array();
+    $query = $query[0];
+    //print_r($query);
+    return $query;
   
  }
+
+  function update_core_sportsman_data($data, $def) {
+    $sql = "UPDATE `rsm_core_sportsman` SET
+    `age` =  '".$data['age']."',
+    `phys_energy` =  '".$data['phys_energy']."',
+    `phys_strength` =  '".$data['phys_strength']."',
+    `phys_endur` =  '".$data['phys_endur']."',
+    `shoot_tech` =  '".$data['shoot_tech']."',
+    `shoot_calm` =  '".$data['shoot_calm']."',
+    `shoot_acc` =  '".$data['shoot_acc']."',
+    `track_tech` =  '".$data['track_tech']."',
+    `track_spd` =  '".$data['track_spd']."'
+    
+    WHERE sportsman_id = ".$def." ";
+    //print($sql);
+    $query=$this->db->query($sql);
+    
+    //$query = $query->result_array();
+    //$query = $query[0];
+    //print_r($query);
+    return $query;
+  
+ } 
+ 
+ function update_core_settings($param) {
+  //$sql_def = "INSERT INTO `rsm_core_settings` (`core_settings_id`, `tactics_importance_low`, `tactics_importance_medium`, `tactics_importance_high`, `shooting_acc_ski_plain_low`, `shooting_acc_ski_plain_medium`, `shooting_acc_ski_plain_high`, `tactics_ski_plain_kd_low`, `tactics_ski_plain_kd_medium`, `tactics_ski_plain_kd_high`, `shooting_acc_ski_hill_low`, `shooting_acc_ski_hill_medium`, `shooting_acc_ski_hill_high`, `tactics_ski_hill_kd_low`, `tactics_ski_hill_kd_medium`, `tactics_ski_hill_kd_high`, `tactics_shooting_acc_speed_low`, `tactics_shooting_acc_speed_medium`, `tactics_shooting_acc_speed_high`, `tactics_shooting_pos_low`, `tactics_shooting_pos_medium`, `tactics_shooting_pos_high`, `tactics_shooting_kd_low`, `tactics_shooting_kd_medium`, `tactics_shooting_kd_high`) VALUES (NULL, '1', '1.05', '1.1', '1', '0.95', '0.9', '1', '1.05', '1.1', '1', '0.93', '0.85', '1', '1.07', '1.15', '1', '0.92', '0.8', '1', '0.85', '0.7', '1', '0.95', '0.9');";
+  //print_r($param);
+  $sql = "UPDATE `rsm_core_settings` SET
+  `tactics_importance_low` =  '".$param['tactics_importance_low']."',
+  `tactics_importance_medium` =  '".$param['tactics_importance_medium']."',
+  `tactics_importance_high` =  '".$param['tactics_importance_high']."', 
+  `shooting_acc_ski_plain_low` =  '".$param['shooting_acc_ski_plain_low']."',
+  `shooting_acc_ski_plain_medium` =  '".$param['shooting_acc_ski_plain_medium']."',
+  `shooting_acc_ski_plain_high` =  '".$param['shooting_acc_ski_plain_high']."',
+  `tactics_ski_plain_kd_low` =  '".$param['tactics_ski_plain_kd_low']."',
+  `tactics_ski_plain_kd_medium` =  '".$param['tactics_ski_plain_kd_medium']."',
+  `tactics_ski_plain_kd_high` =  '".$param['tactics_ski_plain_kd_high']."',
+  `shooting_acc_ski_hill_low` =  '".$param['shooting_acc_ski_hill_low']."',
+  `shooting_acc_ski_hill_medium` =  '".$param['shooting_acc_ski_hill_medium']."',
+  `shooting_acc_ski_hill_high` =  '".$param['shooting_acc_ski_hill_high']."',
+  `tactics_ski_hill_kd_low` =  '".$param['tactics_ski_hill_kd_low']."',
+  `tactics_ski_hill_kd_medium` =  '".$param['tactics_ski_hill_kd_medium']."',
+  `tactics_ski_hill_kd_high` =  '".$param['tactics_ski_hill_kd_high']."',
+  `tactics_shooting_acc_speed_low` =  '".$param['tactics_shooting_acc_speed_low']."',
+  `tactics_shooting_acc_speed_medium` =  '".$param['tactics_shooting_acc_speed_medium']."',
+  `tactics_shooting_acc_speed_high` =  '".$param['tactics_shooting_acc_speed_high']."',
+  `tactics_shooting_pos_low` =  '".$param['tactics_shooting_pos_low']."',
+  `tactics_shooting_pos_medium` =  '".$param['tactics_shooting_pos_medium']."',
+  `tactics_shooting_pos_high` =  '".$param['tactics_shooting_pos_high']."',
+  `tactics_shooting_kd_low` =  '".$param['tactics_shooting_kd_low']."',
+  `tactics_shooting_kd_medium` =  '".$param['tactics_shooting_kd_medium']."',
+  `tactics_shooting_kd_high` =  '".$param['tactics_shooting_kd_high']."'
+  
+  
+  WHERE  `core_settings_id` =1;";
+  //print($sql);
+  $query=$this->db->query($sql);
+  } 
  
 }
+ 
 ?>
