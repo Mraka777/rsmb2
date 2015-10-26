@@ -170,13 +170,13 @@ class Race extends RSM_Controller {
 		if ( $this->ion_auth->logged_in() ) 
 		{
 			$current_day=$this->General_model->get_current_season_date();
-			$this->data['race_info']=$this->Race_model->get_next_race_info($current_day['day_id'], $this->user_bm_id);
+			$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', $current_day['day_id'], $this->user_bm_id);
 			if ($this->input->post()) {
 				$data_update=$this->input->post();//Get training update in POST
 				//print_r($data_update);
-				$this->data['race_info']=$this->Race_model->get_next_race_info($current_day['day_id'], $this->user_bm_id);
+				$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', $current_day['day_id'], $this->user_bm_id);
 				if ($this->data['race_info'][0]['race_status'] == '99') {
-					$this->data['race_info']=$this->Race_model->get_next_race_info(($current_day['day_id']+1), $this->user_bm_id);
+					$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', ($current_day['day_id']+1), $this->user_bm_id);
 				}
 				
 				$this->Race_model->update_next_race_sportsman($this->data['race_info'][0]['race_id'], $data_update, $this->user_bm_id);
@@ -192,7 +192,7 @@ class Race extends RSM_Controller {
 				$current_day=$this->General_model->get_current_season_date();
 				//print_r($current_day);
 				//$current_day = $current_day + 1;
-				$this->data['race_info']=$this->Race_model->get_next_race_info(($current_day['day_id']+1), $this->user_bm_id);
+				$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', ($current_day['day_id']+1), $this->user_bm_id);
 				$this->data['race_team_sportsman_list']=$this->Race_model->get_team_race_sportsman_list($this->data['race_info'][0]['race_id'], $this->user_bm_id);
 				$this->data['race_team_full_list']=$this->Team_model->get_sportsman_list_no_inj($this->user_bm_id);
 				$this->load->view($this->data['current_theme'].'/race/race_line_up_view.php', $this->data);
@@ -209,7 +209,7 @@ class Race extends RSM_Controller {
 		if ( $this->ion_auth->logged_in() ) 
 		{
 			$current_day=$this->General_model->get_current_season_date();
-			$this->data['race_info']=$this->Race_model->get_next_race_info($current_day['day_id'], $this->user_bm_id);
+			$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', $current_day['day_id'], $this->user_bm_id);
 			if ($this->input->post()) {
 				//print_r($this->data['race_info']);
 				$data_update=$this->input->post();//Get training update in POST
@@ -268,7 +268,7 @@ class Race extends RSM_Controller {
 			}
 			elseif ($this->data['race_info'][0]['race_status'] == '99') {
 				//print("ZZZ");
-				$this->data['race_info']=$this->Race_model->get_next_race_info(($current_day['day_id']+1), $this->user_bm_id);
+				$this->data['race_info']=$this->Race_model->get_next_race_info('day_id', ($current_day['day_id']+1), $this->user_bm_id);
 				//print($this->data['race_info'][0]['race_id']);
 				$this->data['race_team_sportsman_list']=$this->Race_model->get_team_race_sportsman_list($this->data['race_info'][0]['race_id'], $this->user_bm_id);
 				$this->data['race_tactics_types']=$this->Race_model->get_race_tactics_types();
