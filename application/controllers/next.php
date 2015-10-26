@@ -46,12 +46,13 @@ class Next extends RSM_Controller {
 		$this->load->view('templates/header', $header_data);
 		$this->load->view('templates/left');
 
-		if ($user_bm_id <= 11){
+		if ($user_bm_id <= 2){
 			$data['training_num']=$this->Next_model->get_trainings_num();
 			$data['training_num']=(array)$data['training_num'][0];
 			$data['training_num']=$data['training_num']['COUNT(*)'];//получили кол-во записей тренировок
 			//$data['training_result']=$this->Next_model->increase_training($data['training_num']);//вызвали ф-ию увеличения параметров  *** ВКЛЮЧИТЬ
-				
+			
+			//$data['core_settings']=$this->Next_model->get_core_settings();	
 			$this->load->view('next', $data);
 			
 			//email test
@@ -73,7 +74,8 @@ class Next extends RSM_Controller {
 				//$output = $this->grocery_crud->render();
 		 
 				//$this->_example_output($output);
-			
+
+
 		}
 		else {}
 
@@ -105,6 +107,108 @@ class Next extends RSM_Controller {
 
 	
 	//END OF CRUD FOR MENU
+
+	//CORE SETTINGS
+	
+	function core()
+	{
+		$this->load->library('ion_auth');
+		$this->load->library('session');
+		$this->load->helper('form');
+		$this->load->database();
+		
+		if ( $this->ion_auth->logged_in() ) 
+		{
+			
+			//GET TEAM ID BY AUTH ID
+			$this->load->model('Next_model');
+			$user = $this->ion_auth->user()->row();
+			//print($user);
+			$rsm_user = $this->Next_model->get_rsm_team_id($user);
+			$user_bm_id=$rsm_user	;
+			//END GET TEAM ID BY AUTH ID
+			//echo($user_bm_id);
+	
+			$this->load->model('Player_model');
+			
+		
+			$header_data['team']=$rsm_user;
+			$this->load->view('templates/header', $header_data);
+			$this->load->view('templates/left');
+	
+			if ($user_bm_id <= 2){
+				$def = 1 ; //for future core settings presets
+				if ($this->input->post()) { //get updates settings
+					$data_update=$this->input->post();//Get training update in POST
+					//print_r($data_update);
+					$this->Next_model->update_core_settings($data_update);
+					$data['core_settings']=$this->Next_model->get_core_settings($def);	
+					$this->load->view('next_core', $data);
+				}
+				else {
+					//print("ZZZ");
+					$data['core_settings']=$this->Next_model->get_core_settings($def);	
+					$this->load->view('next_core', $data);
+				}	
+			}
+			else {}
+	
+			$this->load->view('templates/body_end');
+	
+		}		
+		
+	}
+
+function core_sim()
+	{
+		$this->load->library('ion_auth');
+		$this->load->library('session');
+		$this->load->helper('form');
+		$this->load->database();
+		
+		if ( $this->ion_auth->logged_in() ) 
+		{
+			
+			//GET TEAM ID BY AUTH ID
+			$this->load->model('Next_model');
+			$user = $this->ion_auth->user()->row();
+			//print($user);
+			$rsm_user = $this->Next_model->get_rsm_team_id($user);
+			$user_bm_id=$rsm_user	;
+			//END GET TEAM ID BY AUTH ID
+			//echo($user_bm_id);
+	
+			$this->load->model('Player_model');
+			
+		
+			$header_data['team']=$rsm_user;
+			$this->load->view('templates/header', $header_data);
+			$this->load->view('templates/left');
+	
+			if ($user_bm_id <= 2){
+				$def = 1 ; //for future core settings presets
+				if ($this->input->post()) { //get updates settings
+					$data_update=$this->input->post();//Get training update in POST
+					print_r($data_update);
+					$this->Next_model->update_core_sportsman_data($data_update, $def);
+					$data['test_data']=$this->Next_model->get_test_data($def);	
+					$this->load->view('next_sim', $data);
+				}
+				else {
+					//print("ZZZ");
+					$data['test_data']=$this->Next_model->get_test_data($def);	
+					$this->load->view('next_sim', $data);
+				}	
+			}
+			else {}
+	
+			$this->load->view('templates/body_end');
+	
+		}		
+		
+	}
+	
+	//END CORE SETTINGS
 	
 	public function increase_day()
 	{
